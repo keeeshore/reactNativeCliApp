@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "allowJs": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "isolatedModules": true,
+    "strict": true,
+    "baseUrl": ".",
+    "typeRoots": ["node_modules/@types", "src/typings"],
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "removeComments": false,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "jsx": "react"
+  },
+  "include": [
+    "src", "custom.d.ts"
+  ],
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.tsx"]
+}
