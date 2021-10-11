@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import type {Node} from 'react';
 import {SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View} from 'react-native';
 
@@ -20,6 +20,8 @@ import {
 import {ItemContextProvider} from './src/components/ItemContextProvider';
 import {ListItems} from './src/components/ListItems';
 import {AddItem} from './src/components/AddItem';
+import {Books} from './src/components/Books';
+import {AddBook} from './src/components/AddBook';
 
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -50,6 +52,10 @@ const Section = ({children, title}): Node => {
 const App: () => Node = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
+  const [error, setError] = useState<string | null>(null);
+
+  const [success, setSuccess] = useState<string | null>(null);
+
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -58,17 +64,33 @@ const App: () => Node = () => {
     <SafeAreaView style={backgroundStyle}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
-        <Header />
         <View
           style={{
             borderWidth: 1,
             flex: 1,
           }}>
-          <ItemContextProvider>
+          <ItemContextProvider
+            onError={(err: string | null) => {
+              setError(err);
+            }}
+            onSuccess={(success: string | null) => {
+              setSuccess(success);
+            }}>
             <AddItem />
             <ListItems />
+            <Books books={[]} />
           </ItemContextProvider>
         </View>
+        {error && (
+          <View>
+            <Text style={{color: 'black', backgroundColor: 'red', padding: 5, margin: 5}}>{error}</Text>
+          </View>
+        )}
+        {success && (
+          <View>
+            <Text style={{color: 'black', backgroundColor: 'green', padding: 5, margin: 5}}>{success}</Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
