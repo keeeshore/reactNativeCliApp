@@ -24,4 +24,4 @@
 - `npm run web` (for running in web, uses webpack to build)
 
 
-![](ezgif.com-gif-maker.gif)
+![](gif-demo-1.gif)
