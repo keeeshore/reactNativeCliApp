@@ -22,3 +22,6 @@
 - `npm run ios` (For running in Ios Simulator)
 - `npm run android` (For running in Android Simulator)
 - `npm run web` (for running in web, uses webpack to build)
+
+
+![](ezgif.com-gif-maker.gif)

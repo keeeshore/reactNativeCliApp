@@ -7,7 +7,7 @@ import Config from 'react-native-config';
 const styles = StyleSheet.create({
   input: {
     height: 25,
-    margin: 5,
+    margin: 2,
     borderWidth: 1,
     padding: 3,
     flex: 1,
@@ -49,12 +49,13 @@ export const AddBook = (props: {authorId: number}) => {
   };
 
   return (
-    <View style={{flex: 1, flexDirection: 'row', alignContent: 'center', alignItems: 'center'}}>
-      <View style={{flex: 2, borderColor: 'blue'}}>
+    <View
+      style={{flex: 1, flexDirection: 'row', alignContent: 'center', alignItems: 'center', backgroundColor: 'white'}}>
+      <View style={{flex: 2}}>
         <TextInput placeholder={'Title'} style={styles.input} value={title} onChangeText={setTitle} />
         <TextInput placeholder={'Publisher'} style={styles.input} value={publisher} onChangeText={setPublisher} />
       </View>
-      <View style={{flex: 1, borderColor: 'green'}}>
+      <View style={{flex: 1}}>
         <Button
           color="#000"
           title={'Add Book'}

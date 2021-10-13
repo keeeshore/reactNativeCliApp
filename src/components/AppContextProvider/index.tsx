@@ -173,7 +173,6 @@ export const AppContextProvider = (props: {
         completeItem,
         showSuccess,
       }}>
-      <Text>API_URL={JSON.stringify(Config.API_URL)}</Text>
       {props.children}
     </AppContext.Provider>
   );

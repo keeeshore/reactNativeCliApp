@@ -42,17 +42,17 @@ const App: () => React.ReactNode = () => {
             }}>
             <AddAuthor />
             <Authors />
+            {success && (
+              <View>
+                <Text style={{color: 'black', backgroundColor: 'green', padding: 5, margin: 5}}>{success}</Text>
+              </View>
+            )}
             <Books books={[]} />
           </AppContextProvider>
         </View>
         {error && (
           <View>
             <Text style={{color: 'black', backgroundColor: 'red', padding: 5, margin: 5}}>{error}</Text>
-          </View>
-        )}
-        {success && (
-          <View>
-            <Text style={{color: 'black', backgroundColor: 'green', padding: 5, margin: 5}}>{success}</Text>
           </View>
         )}
       </ScrollView>
