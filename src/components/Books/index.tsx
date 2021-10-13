@@ -1,10 +1,10 @@
 import React, {useState, useEffect, useContext, ReactFragment, ChangeEvent} from 'react';
-import {Book, ItemContext, ItemContextProvider} from '../ItemContextProvider';
+import {Book, AppContext, AppContextProvider} from '../AppContextProvider';
 import {Text, View} from 'react-native';
 import {AddBook} from '../AddBook';
 
 export const Books = (props: {books: Book[]}) => {
-  const {books, currentAuthor} = useContext(ItemContext);
+  const {books, currentAuthor} = useContext(AppContext);
   return (
     <>
       <Text>Books :</Text>

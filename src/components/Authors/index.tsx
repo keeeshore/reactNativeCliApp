@@ -1,9 +1,9 @@
 import React, {useContext} from 'react';
-import {Item, ItemContext} from '../ItemContextProvider';
+import {Item, AppContext} from '../AppContextProvider';
 import {Button, Text, View} from 'react-native';
 
-export const ListItems = (props: {items?: Item[]}) => {
-  const {items, removeItem, completeItem, setCurrentAuthor} = useContext(ItemContext);
+export const Authors = (props: {items?: Item[]}) => {
+  const {items, removeItem, completeItem, setCurrentAuthor} = useContext(AppContext);
 
   const remove = async (item: Item) => {
     await removeItem(item);

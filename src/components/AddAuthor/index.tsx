@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext, ReactFragment, ChangeEvent} from 'react';
-import {Author, Item, ItemContext} from '../ItemContextProvider';
+import {Author, Item, AppContext} from '../AppContextProvider';
 import {View, Button, StyleSheet, TextInput} from 'react-native';
 
 const styles = StyleSheet.create({
@@ -12,14 +12,14 @@ const styles = StyleSheet.create({
   },
 });
 
-export const AddItem = (props: {id?: string}) => {
+export const AddAuthor = (props: {id?: string}) => {
   const [name, setName] = useState('');
 
   const [age, setAge] = useState('');
 
   const [email, setEmail] = useState('');
 
-  const {addItem, setError, showSuccess} = useContext(ItemContext);
+  const {addItem, setError, showSuccess} = useContext(AppContext);
 
   const add = async (data: {name: string; age: string; email: string}) => {
     if (!data.name || !data.age || data.email) {
@@ -63,9 +63,18 @@ export const AddItem = (props: {id?: string}) => {
           color="#000"
           title={'Add Author'}
           onPress={() => {
+            console.log('AddItem clicked!!');
             add({name, age, email});
           }}
         />
+        {/*<input*/}
+        {/*  type={'button'}*/}
+        {/*  onClick={() => {*/}
+        {/*    console.log('AddItem clicked!!');*/}
+        {/*    add({name, age, email});*/}
+        {/*  }}*/}
+        {/*  value={'Click'}*/}
+        {/*/>*/}
       </View>
     </View>
   );

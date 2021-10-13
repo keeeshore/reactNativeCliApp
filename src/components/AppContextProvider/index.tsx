@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import Config from 'react-native-config';
+import {Text} from 'react-native';
+
+console.log('Config in Provider:: ', Config);
 
 export interface Book {
   id?: number;
@@ -25,7 +28,7 @@ export interface Item {
   deleted: boolean;
 }
 
-export interface ItemContextData {
+export interface AppContextData {
   items: Item[];
   books: Book[];
   addBook(book: Book): Promise<boolean>;
@@ -39,7 +42,7 @@ export interface ItemContextData {
   showSuccess(arg: string | null): void;
 }
 
-export const ItemContext = React.createContext<ItemContextData>({
+export const AppContext = React.createContext<AppContextData>({
   items: [],
   books: [],
   addBook: () => Promise.resolve(true),
@@ -47,13 +50,13 @@ export const ItemContext = React.createContext<ItemContextData>({
   removeItem: () => Promise.resolve(true),
   completeItem: () => Promise.resolve(true),
   setCurrentAuthor: (author: Author | null) => '',
-  error: 'asdadad',
+  error: '',
   setError: (arg: string | null) => false,
   showSuccess: (arg: string | null) => false,
   currentAuthor: null,
 });
 
-export const ItemContextProvider = (props: {
+export const AppContextProvider = (props: {
   onError(err: string | null): any;
   onSuccess(success: string | null): any;
   children?: any;
@@ -69,7 +72,7 @@ export const ItemContextProvider = (props: {
   const [success, showSuccess] = useState<string | null>(null);
 
   const addBook = (book: Book): Promise<boolean> => {
-    console.log('ItemContextProvider setBooks');
+    console.log('AppContextProvider setBooks');
     // setBooks(books);
     // return Promise.resolve(true);
     return new Promise((resolve, reject) => {
@@ -81,13 +84,13 @@ export const ItemContextProvider = (props: {
   };
 
   const addItem = async (item: Item): Promise<boolean> => {
-    console.log('ItemContextProvider adding Item', item, ' to : ', items);
+    console.log('AppContextProvider adding Item', item, ' to : ', items);
     try {
       const author: Author = {email: item.author.email, name: item.author.name, age: item.author.age, books: []};
       const results = await axios.post(`${Config.API_URL}/authors`, author);
-      console.log('ItemContextProvider PostAuthors result :: ', results.data);
+      console.log('AppContextProvider PostAuthors result :: ', results.data);
     } catch (e) {
-      console.error('ItemContextProvider addItem ERR :: ', e);
+      console.error('AppContextProvider addItem ERR :: ', e);
       // setError(JSON.stringify(e.message));
       return Promise.reject(e);
     }
@@ -101,7 +104,7 @@ export const ItemContextProvider = (props: {
   };
 
   const removeItem = (item: Item): Promise<boolean> => {
-    console.log('ItemContextProvider removeItem', item, ' to : ', items);
+    console.log('AppContextProvider removeItem', item, ' to : ', items);
     return new Promise((resolve, reject) => {
       setItems(items.filter(i => i.id !== item.id));
       resolve(true);
@@ -109,7 +112,7 @@ export const ItemContextProvider = (props: {
   };
 
   const completeItem = (item: Item): Promise<boolean> => {
-    console.log('ItemContextProvider completeItem', item, ' to : ', items);
+    console.log('AppContextProvider completeItem', item, ' to : ', items);
     return new Promise((resolve, reject) => {
       setItems(
         items.map(i => {
@@ -122,40 +125,41 @@ export const ItemContextProvider = (props: {
   };
 
   const getItemList = async () => {
-    console.log('ItemContextProvider getItemList START :: ');
+    console.log('AppContextProvider getItemList START :: ');
     let items: Item[] = [];
     try {
       console.log('**************  = ', Config.API_URL);
       const results = await axios.get(`${Config.API_URL}/authors`);
-      console.log('ItemContextProvider getItemList ERR :: ', results.data);
+      console.log('AppContextProvider getItemList results :: ', results.data);
       items = results.data;
     } catch (e: any) {
-      // console.error('ItemContextProvider getItemList ERR :: ', e);
+      console.error('AppContextProvider getItemList ERR :: ', e);
       setError(JSON.stringify(e.message));
     }
-    console.log('ItemContextProvider getItemList then :: ', items);
+    console.log('AppContextProvider getItemList then :: ', items);
     return items;
   };
 
   useEffect(() => {
-    console.log('ItemContextProvider useEffect error:: ', error);
+    console.log('AppContextProvider useEffect error:: ', error);
     props.onError(error);
   }, [error, props]);
 
   useEffect(() => {
-    console.log('ItemContextProvider useEffect Success:: ', success);
+    console.log('AppContextProvider useEffect Success:: ', success);
     props.onSuccess(success);
   }, [success, props]);
 
   useEffect(() => {
-    console.log('ItemContextProvider useEffect INIT:: ');
+    console.log('AppContextProvider useEffect INIT:: ');
     getItemList().then((result: Item[]) => {
+      console.log('AppContextProvider useEffect getItemList then:: ', result);
       setItems(result);
     });
   }, []);
 
   return (
-    <ItemContext.Provider
+    <AppContext.Provider
       value={{
         error,
         setError,
@@ -169,7 +173,8 @@ export const ItemContextProvider = (props: {
         completeItem,
         showSuccess,
       }}>
+      <Text>API_URL={JSON.stringify(Config.API_URL)}</Text>
       {props.children}
-    </ItemContext.Provider>
+    </AppContext.Provider>
   );
 };

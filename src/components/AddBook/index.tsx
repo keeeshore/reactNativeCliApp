@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext, ReactFragment, ChangeEvent} from 'react';
-import {Book, ItemContext} from '../ItemContextProvider';
+import {Book, AppContext} from '../AppContextProvider';
 import {View, Button, StyleSheet, TextInput} from 'react-native';
 import axios from 'axios';
 import Config from 'react-native-config';
@@ -19,14 +19,14 @@ export const AddBook = (props: {authorId: number}) => {
 
   const [publisher, setPublisher] = useState('');
 
-  const {addBook, setError, showSuccess} = useContext(ItemContext);
+  const {addBook, setError, showSuccess} = useContext(AppContext);
 
   const addBookToDb = async (book: Book): Promise<Book> => {
     try {
       const results = await axios.post(`${Config.API_URL}/books`, book);
-      console.log('ItemContextProvider Book result :: ', results.data);
+      console.log('AppContextProvider Book result :: ', results.data);
     } catch (e) {
-      // console.error('ItemContextProvider getItemList ERR :: ', e);
+      console.error('AppContextProvider getItemList ERR :: ', e);
       return Promise.reject(e);
     }
     return Promise.resolve(book);
