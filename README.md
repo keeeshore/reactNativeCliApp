@@ -2,7 +2,7 @@
 
 ## Works on IOS, Android and Browser.
 
-### Sample application which calls an Express.js application (using TS and Mikrorm)
+### Sample application which calls an Express.js application (using TS and Mikrorm: https://github.com/keeeshore/express-typescript-mikrorm)
 
 - Can add, update and list Authors
 - Clicking on an author from the list, will populate author's books and its details
