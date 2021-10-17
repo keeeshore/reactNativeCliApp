@@ -1,6 +1,9 @@
 import React, {useState, useEffect, useContext, ReactFragment, ChangeEvent} from 'react';
-import {Author, Item, AppContext} from '../AppContextProvider';
-import {View, Button, StyleSheet, TextInput, Text} from 'react-native';
+import {Author, Item, AppContext, Book} from '../AppContextProvider';
+import {View, StyleSheet, TextInput, Text} from 'react-native';
+import Button from '../shared/Button';
+import {BookComp} from '../BookComp';
+import {AddBook} from '../AddBook';
 
 const styles = StyleSheet.create({
   input: {
@@ -12,12 +15,14 @@ const styles = StyleSheet.create({
   },
 });
 
-export const AddAuthor = (props: {id?: string}) => {
+export const AddAuthor = (props: {id?: number; addAuthor(author: Author): Promise<any>}) => {
   const [name, setName] = useState('');
 
   const [age, setAge] = useState('');
 
   const [email, setEmail] = useState('');
+
+  const [books, setBooks] = useState<Book[]>([]);
 
   const {addItem, setError, showSuccess, error} = useContext(AppContext);
 
@@ -33,24 +38,26 @@ export const AddAuthor = (props: {id?: string}) => {
     }
     setError(null);
     const author: Author = {
+      id: 0,
       email: data.email,
       name: data.name,
       age: parseInt(data.age, 10),
       books: [],
     };
-    const item: Item = {
-      author: author,
-      completed: false,
-      deleted: false,
-      inProgress: false,
-    };
     try {
-      await addItem(item);
+      console.log('AddAuthor component starting AddAuthor ::: ', author);
+      const result = await props.addAuthor(author);
+      console.log('AddAuthor component complete AddAuthor ::: ', result);
       showSuccess(`Author Added !!`);
     } catch (e: any) {
+      console.error('AddAuthor component error AddAuthor ::: ', e);
       setError(e.message);
     }
   };
+
+  useEffect(() => {
+    setError(null);
+  }, [setError]);
 
   return (
     <>
@@ -67,10 +74,15 @@ export const AddAuthor = (props: {id?: string}) => {
           <TextInput placeholder={'Name'} style={styles.input} value={name} onChangeText={setName} />
           <TextInput placeholder={'Email'} style={styles.input} value={email} onChangeText={setEmail} />
           <TextInput placeholder={'Age'} style={styles.input} value={age} onChangeText={setAge} />
-        </View>
-        <View style={{flex: 1, borderColor: 'green'}}>
+          {/*<View style={{flex: 1, backgroundColor: '#CCC', margin: 4}}>*/}
+          {/*  <AddBook authorId={0} />*/}
+          {/*</View>*/}
+          {error && (
+            <View style={{flex: 1}}>
+              <Text style={{color: 'black', backgroundColor: 'red', padding: 5, margin: 5}}>{error}</Text>
+            </View>
+          )}
           <Button
-            color="#000"
             title={'Add Author'}
             onPress={() => {
               console.log('AddItem clicked!! with ', name, age, email);
@@ -79,11 +91,6 @@ export const AddAuthor = (props: {id?: string}) => {
           />
         </View>
       </View>
-      {error && (
-        <View style={{flex: 1}}>
-          <Text style={{color: 'black', backgroundColor: 'red', padding: 5, margin: 5}}>{error}</Text>
-        </View>
-      )}
     </>
   );
 };

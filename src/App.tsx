@@ -6,23 +6,38 @@
  * @flow strict-local
  */
 
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 // import type {Node} from 'react';
 import {SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View} from 'react-native';
 
-import {AppContextProvider} from './components/AppContextProvider';
+import {AppContext, AppContextProvider, Author, Book} from './components/AppContextProvider';
 import {Authors} from './components/Authors';
 import {AddAuthor} from './components/AddAuthor';
 import {Books} from './components/Books';
+import {AddBook} from './components/AddBook';
+import {addAuthor} from './service/authorService';
+
+export enum ACTIONS {
+  ADD_AUTHOR,
+  ADD_BOOK,
+}
 
 const App: () => React.ReactNode = () => {
   // const isDarkMode = useColorScheme() === 'dark';
+
+  const [author, setAuthor] = useState<Author | null>(null);
+
+  const [book, setBook] = useState<Book | null>(null);
+
+  const [action, setAction] = useState<Author | null>(null);
 
   const [error, setError] = useState<string | null>(null);
 
   const [success, setSuccess] = useState<string | null>(null);
 
   // return <AddAuthor />;
+
+  const onEditBook = (book: Book) => {};
 
   return (
     <SafeAreaView>
@@ -39,22 +54,44 @@ const App: () => React.ReactNode = () => {
             }}
             onSuccess={(success: string | null) => {
               setSuccess(success);
+            }}
+            onAuthorSelected={(author: Author) => {
+              setAuthor(author);
             }}>
-            <AddAuthor />
-            <Authors />
+            {author ? (
+              <>
+                <Text>{JSON.stringify(book)}</Text>
+                <AddBook
+                  book={book || null}
+                  author_id={author.id}
+                  onBookAdded={(book: Book) => {
+                    console.log('Book added :: ', book);
+                    const books = author?.books || [];
+                    books.push(book);
+                    setAuthor({...author, ...{books: books}});
+                  }}
+                />
+                <Books
+                  author={author}
+                  onEditBook={(book: Book) => {
+                    console.log('App.tsx onEditBook, setBook now!!', book);
+                    setBook(book);
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <AddAuthor id={0} addAuthor={addAuthor} />
+                <Authors />
+              </>
+            )}
             {success && (
               <View>
                 <Text style={{color: 'black', backgroundColor: 'green', padding: 5, margin: 5}}>{success}</Text>
               </View>
             )}
-            <Books books={[]} />
           </AppContextProvider>
         </View>
-        {error && (
-          <View>
-            <Text style={{color: 'black', backgroundColor: 'red', padding: 5, margin: 5}}>{error}</Text>
-          </View>
-        )}
       </ScrollView>
     </SafeAreaView>
   );

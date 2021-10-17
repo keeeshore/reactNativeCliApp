@@ -1,102 +1,71 @@
 import React, {useContext} from 'react';
-import {Item, AppContext} from '../AppContextProvider';
-import {Button, Text, View} from 'react-native';
+import {Item, AppContext, Author} from '../AppContextProvider';
+import {Button, StyleSheet, Text, View} from 'react-native';
+import {AuthorComp} from '../AuthorComp';
+import {deleteAuthor} from '../../service/authorService';
 
 export const Authors = (props: {items?: Item[]}) => {
-  const {items, removeItem, completeItem, setCurrentAuthor} = useContext(AppContext);
+  const {authors, removeItem, completeItem, setCurrentAuthor} = useContext(AppContext);
 
-  const remove = async (item: Item) => {
-    await removeItem(item);
+  const remove = async (author: Author) => {
+    await deleteAuthor(author.id || 0);
+    await removeItem(author);
     setCurrentAuthor(null);
   };
 
-  const complete = async (item: Item) => {
+  const complete = async (item: Author) => {
+    await completeItem(item);
+  };
+
+  const edit = async (item: Author) => {
     await completeItem(item);
   };
 
   return (
     <>
       <Text style={{padding: 5, fontWeight: 'bold', fontSize: 15}}>Authors</Text>
-      <View
-        style={{
-          alignSelf: 'stretch',
-          flexDirection: 'row',
-          flex: 6,
-          borderWidth: 1,
-          alignContent: 'center',
-          alignItems: 'center',
-        }}>
-        <View style={{flex: 1}}>
+      <View style={tableStyle.header}>
+        <View style={tableStyle.col1}>
           <Text>Id</Text>
         </View>
-        <View style={{flex: 3}}>
+        <View style={tableStyle.col}>
           <Text style={{}}>Name</Text>
         </View>
-        <View style={{flex: 2, alignContent: 'center', alignItems: 'center'}}>
+        <View style={tableStyle.col}>
           <Text>Book(s)</Text>
         </View>
-        <View style={{flex: 2, alignContent: 'center', alignItems: 'center'}}>
+        <View style={tableStyle.col}>
           <Text>Details</Text>
         </View>
-        <View style={{flex: 2, alignContent: 'center', alignItems: 'center'}}>
-          <Text>Pass?</Text>
-        </View>
-        <View style={{flex: 1}}>
-          <Text>X</Text>
+        <View style={tableStyle.col}>
+          <Text>Actions</Text>
         </View>
       </View>
-      {items.map((item: Item, key: number) => (
-        <View
-          key={key}
-          style={{
-            alignSelf: 'stretch',
-            flexDirection: 'row',
-            flex: 6,
-            borderWidth: 1,
-            alignContent: 'center',
-            alignItems: 'center',
-          }}>
-          <View style={{flex: 1}}>
-            <Text>{item.id}</Text>
-          </View>
-          <View style={{flex: 3}}>
-            <Text style={{color: item.completed ? 'green' : '#000'}}>{item.author.name}</Text>
-          </View>
-          <View style={{flex: 2, alignContent: 'center', alignItems: 'center'}}>
-            <Text>{item.author.books.length}</Text>
-          </View>
-          <View style={{flex: 2, alignContent: 'center', alignItems: 'center'}}>
-            <Button
-              title={'show'}
-              onPress={() => {
-                setCurrentAuthor(item.author);
-              }}
-            />
-          </View>
-          {!item.completed ? (
-            <View style={{flex: 2}}>
-              <Button
-                title={'ok'}
-                onPress={() => {
-                  complete(item);
-                }}
-              />
-            </View>
-          ) : (
-            <View style={{flex: 2, alignContent: 'center', alignItems: 'center'}}>
-              <Text> pass </Text>
-            </View>
-          )}
-          <View style={{flex: 1}}>
-            <Button
-              title={'X'}
-              onPress={() => {
-                remove(item);
-              }}
-            />
-          </View>
-        </View>
+      {authors.map((author: Author, key: number) => (
+        <AuthorComp key={key} setCurrentAuthor={setCurrentAuthor} author={author} edit={complete} remove={remove} />
       ))}
     </>
   );
 };
+
+export const tableStyle = StyleSheet.create({
+  header: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    flex: 6,
+    borderWidth: 1,
+    alignContent: 'center',
+    alignItems: 'center',
+  },
+  col1: {
+    flex: 1,
+  },
+  col2: {
+    flex: 3,
+  },
+  col: {
+    flex: 2,
+    alignContent: 'center',
+    alignItems: 'center',
+  },
+});
