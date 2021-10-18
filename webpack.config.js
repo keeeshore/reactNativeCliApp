@@ -30,7 +30,7 @@ module.exports = (env = {}, argv) => {
       alias: {
         // 'react-native': 'react-native-web',
         'react-native$': 'react-native-web',
-        'react-native-config': '../../env-config/index.js',
+        'react-native-config$': path.resolve(__dirname, './src/env-config/index.js'),
       },
     },
     optimization: {
